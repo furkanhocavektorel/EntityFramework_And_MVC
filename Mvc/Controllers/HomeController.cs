@@ -1,32 +1,53 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Mvc.Models;
-using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
+using Mvc.Models.context;
+using Mvc.Models.entity;
+using Mvc.Models.vmodel;
 
 namespace Mvc.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public IActionResult Index(int? id)
         {
-            _logger = logger;
+
+            Console.WriteLine(id);
+        
+
+            NorthwindContext northwind = new NorthwindContext();
+
+
+            IndexVıew indexVıew = new IndexVıew();
+
+            indexVıew.categories = northwind.Categories.ToList();
+
+            if (id == null)
+            {
+                indexVıew.products = northwind.Products.ToList();
+            }
+            else
+            {
+                indexVıew.products = northwind.Products
+                    .Include("CategoryId")
+                    .Where(pr => pr.CategoryId.CategoryID  == id)
+                    .ToList();
+            }
+            indexVıew.activeCategory = id;
+
+            if (id == 3)
+            {
+                Console.WriteLine("merhaba");
+            }
+            else { Console.WriteLine("gitti"); }
+
+            string sonuc = id == 3 ? "merhaba" : "gitti";
+
+
+            return View(indexVıew);
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+       
     }
 }
