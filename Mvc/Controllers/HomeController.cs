@@ -4,20 +4,20 @@ using Mvc.Models.context;
 using Mvc.Models.dtos;
 using Mvc.Models.entity;
 using Mvc.Models.vmodel;
+using Mvc.Util;
 
 namespace Mvc.Controllers
 {
     public class HomeController : Controller
     {
 
+        [HttpGet]
         public IActionResult Index(int? id)
         {
-
+            
             Console.WriteLine(id);
         
-
             NorthwindContext northwind = new NorthwindContext();
-
 
             IndexVıew indexVıew = new IndexVıew();
 
@@ -44,15 +44,31 @@ namespace Mvc.Controllers
 
             string sonuc = id == 3 ? "merhaba" : "gitti";
 
+            JwtManager jwtManager = new JwtManager();
+
+            string token = jwtManager.CreateToken(878);
+
+            string? id2 = jwtManager.ValidateToken(token);
 
             return View(indexVıew);
         }
 
+
+
+        [HttpGet]
         public IActionResult NewProduct()
         {
+          
+            string metin = "bu gir viewbag metni";
+            Product p = new Product();
+            ViewBag.Metinn =metin;
             return View();
         }
 
+
+
+
+        [HttpPost]
         public IActionResult CreateProduct(NewProductRequest request)
         {
             NorthwindContext context = new NorthwindContext();
@@ -63,13 +79,13 @@ namespace Mvc.Controllers
             product.UnitPrice = request.UnitPrice;
             product.UnitsInStock = request.Stock;
 
+            Category c= context.Categories
+                .FirstOrDefault(x => x.CategoryID == request.CategoryId);
 
+            product.CategoryId = c;
             context.Products.Add(product);
             context.SaveChanges();
             // insert into product (prdoashdg) values {}
-         
-
-
             return View("NewProduct");
         }
 

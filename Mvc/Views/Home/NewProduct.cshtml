@@ -13,6 +13,11 @@
 </head>
 
 <body>
+    <div>
+        <h2>
+            @ViewBag.Metinn
+        </h2>
+    </div>
 
     <div class="myheader " style="background-color: rgba(165, 180, 219, 0.39); ">
         <header class="d-flex justify-content-center py-3">
@@ -30,7 +35,7 @@
 
         <div class="col-3"></div>
         <div class="col-6 " style="background-color: beige; margin-top:50px; padding:20px;">
-        <form class="row g-3" action="/home/createproduct">
+        <form class="row g-3" action="/home/createproduct" method="post">
             <div class="col-md-12">
                     <label for="ProductName" class="form-label">ProductName</label>
                     <input type="text" class="form-control" name="productname" id="ProductName">
